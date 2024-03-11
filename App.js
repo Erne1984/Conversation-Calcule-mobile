@@ -7,41 +7,60 @@ import { Dropdown } from './components/Dropdown/Dropdown';
 
 
 export default function App() {
-  const [celsius, setCelsius] = useState("0");
+  const [selectedConversion, setSelectedConversion] = useState('ºC para ºF');
+  const [celsius, setCelsius] = useState("");
+  const [kilometer, setMph] = useState("");
   const [result, setResult] = useState("--");
 
+  function handleConversion() {
+    if (selectedConversion === 'ºC para ºF') {
+      celsiusTofahrenheit();
+    } else if (selectedConversion === 'km/h para mph') {
+      kmTomph();
+    }
+  }
+
   function celsiusTofahrenheit() {
-    console.log("Button Pressed");
     const celsiusNumber = parseFloat(celsius);
 
     if (!isNaN(celsiusNumber)) {
       const newResult = celsiusNumber * 1.8 + 32;
 
-      setResult(newResult.toFixed(2)); 
+      setResult(newResult.toFixed(2));
     } else {
-      setResult("Invalid input");
+      setResult("Entrada inválida!");
     }
   }
 
-  console.log(result)
+  function kmTomph() {
+    const factorConversation = 0.621371;
+    const kilometerNumber = parseFloat(kilometer);
+
+    if (!isNaN(kilometerNumber)) {
+      const Mph = kilometerNumber * factorConversation;
+      setResult(Mph.toFixed(2));
+    } else {
+      setResult("Entrada inválida!");
+    }
+  }
 
   return (
     <ScrollView style={styles.container}>
-      <Dropdown />
+      <Dropdown selectedValue={selectedConversion} onValueChange={(value) => setSelectedConversion(value)} />
       <View >
         <Title content="Calculo conversão" />
 
         <View style={styles.inputContainer}>
           <TextInput
             keyboardType='numeric'
-            value={celsius}
+            value={selectedConversion == "ºC para ºF" ? "celsius" : "kilometer"}
             placeholder='Celsius'
             style={styles.input}
-            onChangeText={(text) => setCelsius(text)}
+            onChangeText={(text) => selectedConversion == "ºC para ºF"? setCelsius(text): setMph(text)}
           />
         </View>
 
-        <Button event={celsiusTofahrenheit} />
+        <Button event={handleConversion} />
 
         <View style={styles.boxResult}>
           <Text style={styles.boxResultText}>Valor convertido:</Text>
